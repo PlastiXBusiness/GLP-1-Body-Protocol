@@ -9,20 +9,16 @@
 <style>
 /* ─── RESET & BASE ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+html, body { height: 100%; overflow: hidden; }
 body {
   font-family: 'Hanken Grotesk', sans-serif;
-  background: #f0f0ec;
+  background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 100vh;
+  height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
-
-/* ─── CONFIG: REPLACE THESE ─── */
-/* GOOGLE_SCRIPT_URL → tu Apps Script Web App URL */
-/* CALENDLY_URL → tu enlace de Calendly */
 
 /* ─── TOKENS ─── */
 :root {
@@ -51,7 +47,8 @@ body {
   width: 100%;
   max-width: 430px;
   background: var(--white);
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -86,11 +83,12 @@ body {
 /* ─── HERO IMAGE ─── */
 .hero-wrap {
   width: 100%;
-  aspect-ratio: 16/9;
+  height: 140px;
   background: #3d5a2e;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
+  border-radius: 0 0 32px 32px;
 }
 .hero-wrap img {
   width: 100%;
@@ -118,12 +116,10 @@ body {
 /* ─── MAIN CARD ─── */
 .card {
   background: var(--white);
-  border-radius: 40px 40px 0 0;
-  margin-top: -32px;
   flex: 1;
-  padding: 28px 24px 48px;
-  position: relative;
-  z-index: 1;
+  padding: 16px 24px 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ─── PROGRESS HEADER ─── */
@@ -131,7 +127,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
 }
 .back-btn {
   width: 36px;
@@ -166,14 +162,6 @@ body {
   border-radius: 4px;
   transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.progress-count {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--gray-400);
-  min-width: 34px;
-  text-align: right;
-  letter-spacing: 0.03em;
-}
 
 /* ─── SECTION LABEL ─── */
 .section-label {
@@ -182,36 +170,36 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gray-400);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 /* ─── QUESTION TITLE ─── */
 .question-title {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--black);
-  line-height: 1.25;
-  margin-bottom: 6px;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
 }
 .question-sub {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--gray-600);
-  line-height: 1.55;
-  margin-bottom: 24px;
+  line-height: 1.5;
+  margin-bottom: 16px;
 }
 
 /* ─── OPTIONS ─── */
 .options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .opt-btn {
   width: 100%;
-  padding: 14px 18px;
+  padding: 11px 16px;
   border: 1.5px solid var(--gray-200);
   border-radius: var(--radius-pill);
   background: var(--white);
@@ -234,13 +222,11 @@ body {
 .opt-btn:hover { border-color: #c0c0bc; background: var(--gray-100); }
 .opt-btn:active { transform: scale(0.98); }
 
-/* Selected state — lime */
 .opt-btn.selected {
   border-color: var(--lime-dark);
   background: var(--lime-light);
   color: var(--black);
 }
-/* Auto-advance flash */
 .opt-btn.flash {
   border-color: var(--lime-dark);
   background: var(--lime);
@@ -280,7 +266,7 @@ body {
 /* ─── CONTINUE BUTTON ─── */
 .continue-btn {
   width: 100%;
-  padding: 15px 20px;
+  padding: 13px 20px;
   background: var(--black);
   color: var(--white);
   border: none;
@@ -599,11 +585,6 @@ body {
   <!-- Top bar -->
   <div class="top-bar">The GLP-1 Muscle Protection Protocol</div>
 
-  <!-- Logo -->
-  <div class="logo-bar">
-    <div class="logo">glp1body</div>
-  </div>
-
   <!-- Hero -->
   <div class="hero-wrap">
     <div class="hero-fallback">
@@ -613,26 +594,18 @@ body {
 
   <!-- Main card -->
   <div class="card" id="card">
-    <p class="disclaimer">Free assessment · 2 minutes · Personalized results</p>
     <div id="qroot"></div>
   </div>
 </div>
 
 <script>
-/* ─────────────────────────────────────────────
-   CONFIG — REPLACE THESE TWO VALUES
-   ─────────────────────────────────────────────
-   1. SHEET_URL → URL de tu Google Apps Script Web App
-      Pasos: Apps Script > Nuevo proyecto > pega el código del README
-      > Implementar > Web app > "Anyone" > Copiar URL
-   2. CALENDLY_URL → Tu link de Calendly
-   ───────────────────────────────────────────── */
+/* ─── CONFIG ─── */
 const SHEET_URL    = 'https://script.google.com/macros/s/AKfycbw2Rq_UAiNGoU-QrJYnz4XuDNRzbqiYs5urLTL2gmqcLnutnhgKCo0hTL_sacURvc94iw/exec';
 const CALENDLY_URL = 'https://calendly.com/YOUR_LINK';
 
 /* ─── QUIZ STEPS ─── */
 const SC = [
-  {id:'gender', type:'single', qn:1,  lbl:'About you',
+  {id:'gender', type:'single', qn:1, lbl:'About you',
    q:'What is your gender?',
    opts:[{t:'Woman',v:'woman'},{t:'Man',v:'man'}]},
 
@@ -727,8 +700,9 @@ const SC = [
      {t:"I'm not planning to stop anytime soon",v:'not_stop'}
    ]},
 
+  /* CHANGE 1: "6 months" → "16 weeks" */
   {id:'goal', type:'single', qn:11, lbl:'Your vision',
-   q:'What would feel like the biggest win for you 6 months from now?',
+   q:'What would feel like the biggest win for you 16 weeks from now?',
    opts:[
      {t:'Keeping my results after stopping the medication',v:'keep'},
      {t:'Having a toned body, not just a smaller one',v:'toned'},
@@ -763,20 +737,35 @@ const SC = [
 /* ─── STATE ─── */
 let ci = 0, ans = {}, exited = false, done = false, goingBack = false;
 
-/* ─── RISK CALC ─── */
+/* Session ID único por visita — permite hacer upsert en Sheets */
+const sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+
+/* ─── RISK CALC (updated per scoring design doc) ─── */
 function calcRisk(){
   let score = 0;
-  const em = {none:3,light:2,cardio:1,occ:0,resist:-1};
-  const pm = {notrack:3,lt50:3,'50-80':2,'80-120':1,gt120:0};
+  /* Medication: sema=0, tirz=+1, other=0, stopped=+3 */
+  const mm = {sema:0, tirz:1, other:0, stopped:3};
+  /* Duration */
   const dm = {lt1m:0,'1-3m':1,'3-6m':2,'6-12m':3,gt12m:4};
+  /* Weight lost */
   const wm = {lt10:0,'10-20':1,'20-35':2,'35-50':3,gt50:4};
-  score += (em[ans.ex]??1) + (pm[ans.pro]??1) + (dm[ans.dur]??1) + (wm[ans.wlost]??1);
-  if(ans.med==='stopped') score += 2;
-  if(ans.fear==='terrified') score += 1;
-  if(score>=9) return 'HIGH';
-  if(score>=5) return 'MODERATE';
+  /* Exercise (highest weight factor) */
+  const em = {none:4, light:3, cardio:2, occ:1, resist:0};
+  /* Protein */
+  const pm = {notrack:3, lt50:3,'50-80':2,'80-120':1,gt120:0};
+
+  score += (mm[ans.med] ?? 0)
+         + (dm[ans.dur] ?? 0)
+         + (wm[ans.wlost] ?? 0)
+         + (em[ans.ex] ?? 2)
+         + (pm[ans.pro] ?? 2);
+
+  /* Tiers: 0-4 LOW · 5-9 MODERATE · 10+ HIGH */
+  if(score >= 10) return 'HIGH';
+  if(score >= 5)  return 'MODERATE';
   return 'LOW';
 }
+
 function estMuscle(){
   const wm = {lt10:5,'10-20':15,'20-35':27,'35-50':42,gt50:57};
   const w = wm[ans.wlost] || 15;
@@ -788,42 +777,57 @@ function proteinTarget(){
   return Math.round(kg*1.4) + 'g';
 }
 
-/* ─── GOOGLE SHEETS SUBMIT ─── */
-async function submitToSheets(name, email){
-  if(!SHEET_URL || SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
-    console.warn('ℹ️ SHEET_URL not configured — skipping data submission');
-    return;
-  }
-  const payload = {
-    timestamp: new Date().toISOString(),
-    name, email,
-    risk: calcRisk(),
-    muscle_estimate: estMuscle(),
-    protein_target: proteinTarget(),
+/* ─── GOOGLE SHEETS — envío a Sheets (fire-and-forget) ─── */
+function sendToSheets(payload){
+  if(!SHEET_URL || SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') return;
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+}
+
+/* Se llama en cada paso: crea la fila la primera vez, la actualiza en los siguientes */
+function trackStep(lastStep){
+  sendToSheets({
+    session_id:     sessionId,
+    last_step:      lastStep,
+    timestamp:      new Date().toISOString(),
+    completed:      'no',
     ...ans
-  };
-  try {
-    await fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-  } catch(e) {
-    console.error('Sheet submit error:', e);
-  }
+  });
+}
+
+/* Se llama solo al final cuando el usuario introduce nombre + email */
+function submitToSheets(name, email){
+  sendToSheets({
+    session_id:      sessionId,
+    last_step:       'completed',
+    timestamp:       new Date().toISOString(),
+    completed:       'yes',
+    name, email,
+    risk:            calcRisk(),
+    muscle_estimate: estMuscle(),
+    protein_target:  proteinTarget(),
+    ...ans
+  });
 }
 
 /* ─── NAVIGATION ─── */
 function goNext(){
   const s = SC[ci];
-  if(s.id === 'gender' && ans.gender === 'man'){ exited = true; render(); return; }
+  if(s.id === 'gender' && ans.gender === 'man'){
+    trackStep('gender_exit');
+    exited = true; render(); return;
+  }
   if(s.type === 'email'){
     const name  = document.getElementById('enm')?.value?.trim();
     const email = document.getElementById('eem')?.value?.trim();
-    submitToSheets(name, email);
+    submitToSheets(name, email); /* envío final con nombre+email */
     done = true; render(); return;
   }
+  trackStep(s.id); /* envío parcial en cada paso */
   goingBack = false;
   ci++; render();
   if(SC[ci] && SC[ci].type === 'loading') doLoad();
@@ -838,7 +842,6 @@ function goBack(){
 function sel(oi){
   const s = SC[ci];
   ans[s.id] = s.opts[oi].v;
-  // Flash then auto-advance
   const btns = document.querySelectorAll('.opt-btn');
   if(btns[oi]) btns[oi].classList.add('flash');
   setTimeout(() => goNext(), 280);
@@ -856,7 +859,17 @@ function selM(oi){
     if(ans[s.id].includes(o.v)) ans[s.id] = ans[s.id].filter(v=>v!==o.v);
     else ans[s.id].push(o.v);
   }
-  render();
+  /* Update buttons in-place — no re-render so no slide animation fires */
+  const selA = ans[s.id];
+  document.querySelectorAll('.opt-btn').forEach((btn, i) => {
+    if(i >= s.opts.length) return;
+    const isSel = selA.includes(s.opts[i].v);
+    btn.classList.toggle('selected', isSel);
+    const check = btn.querySelector('.opt-check');
+    if(check) check.textContent = isSel ? '✓' : '';
+    const note = btn.querySelector('.opt-note');
+    if(note) note.style.color = isSel ? '#5a7a30' : '';
+  });
 }
 
 function chkEmail(){
@@ -923,13 +936,14 @@ function renderMulti(s){
     <button class="continue-btn" onclick="goNext()">Continue →</button>`;
 }
 
+/* CHANGE 2: bridge records ans[id]='si' before advancing */
 function renderBridge(s){
   return `
     <div class="bridge-card">
       <div class="bridge-headline">${s.headline}</div>
       <div class="bridge-body">${s.body}</div>
     </div>
-    <button class="continue-btn" onclick="goNext()">I understand →</button>`;
+    <button class="continue-btn" onclick="ans['${s.id}']='si';goNext()">I understand →</button>`;
 }
 
 function renderNotes(s){
@@ -966,15 +980,26 @@ function renderLoading(){
     </div>`;
 }
 
+/* CHANGE 4: show risk badge before name/email form */
 function renderEmail(){
+  const risk   = calcRisk();
+  const rClass = risk==='HIGH' ? 'risk-high' : risk==='MODERATE' ? 'risk-mod' : 'risk-low';
+  const rLabel = risk==='HIGH' ? 'HIGH RISK' : risk==='MODERATE' ? 'MODERATE RISK' : 'LOW RISK';
+  const rMsg   = risk==='HIGH'
+    ? 'Your score shows significant muscle loss risk.'
+    : risk==='MODERATE'
+    ? "You're ahead of most — but there are clear gaps to close."
+    : "You're in a strong position. Let's keep it that way.";
   return `
     <div class="email-screen">
       <div class="results-ready-label">Your results are ready</div>
-      <div class="question-title">Your Muscle Risk Score has been calculated.</div>
-      <div class="question-sub" style="margin-bottom:20px">Enter your details to see your complete score — and receive your personalized GLP-1 Body Blueprint by email.</div>
+      <span class="risk-badge ${rClass}" style="margin-bottom:8px">${rLabel}</span>
+      <div style="font-size:14px;color:var(--gray-600);line-height:1.5;margin-bottom:20px">${rMsg}</div>
+      <div class="question-title" style="font-size:20px;margin-bottom:6px">Enter your details to unlock your full score.</div>
+      <div class="question-sub" style="margin-bottom:20px">We'll also send your personalized GLP-1 Body Blueprint by email.</div>
       <input id="enm" type="text"  class="form-input" placeholder="First name" oninput="chkEmail()"/>
       <input id="eem" type="email" class="form-input" placeholder="Email address" oninput="chkEmail()"/>
-      <button id="ebtn" class="continue-btn" disabled onclick="goNext()">See my Muscle Risk Score →</button>
+      <button id="ebtn" class="continue-btn" disabled onclick="goNext()">See my full Muscle Risk Score →</button>
       <p class="privacy-note">🔒 Your information is never shared. Used only to send your Blueprint.</p>
     </div>`;
 }
@@ -1072,7 +1097,19 @@ function render(){
 
   /* Progress */
   const totalQ  = 14;
-  const pct     = s.qn ? Math.round((s.qn / totalQ) * 100) : (s.type==='loading'?95:s.type==='email'?98:0);
+  /* Para bridges (sin qn) usamos el qn de la pregunta anterior para que la barra no retroceda */
+  let pct;
+  if(s.qn) {
+    pct = Math.round((s.qn / totalQ) * 100);
+  } else if(s.type === 'loading') {
+    pct = 95;
+  } else if(s.type === 'email') {
+    pct = 98;
+  } else {
+    let prevQn = 0;
+    for(let i = ci - 1; i >= 0; i--){ if(SC[i].qn){ prevQn = SC[i].qn; break; } }
+    pct = Math.round((prevQn / totalQ) * 100);
+  }
   const showHdr = s.type !== 'loading' && s.type !== 'email';
 
   let hdr = '';
@@ -1086,17 +1123,16 @@ function render(){
         <div class="progress-track">
           <div class="progress-fill" style="width:${pct}%"></div>
         </div>
-        <div class="progress-count">${s.qn ? s.qn+' / '+totalQ : ''}</div>
       </div>`;
   }
 
   let body = '';
-  if(s.type === 'single')  body = renderSingle(s);
-  else if(s.type === 'multi')  body = renderMulti(s);
-  else if(s.type === 'bridge') body = renderBridge(s);
-  else if(s.type === 'notes')  body = renderNotes(s);
+  if(s.type === 'single')   body = renderSingle(s);
+  else if(s.type === 'multi')   body = renderMulti(s);
+  else if(s.type === 'bridge')  body = renderBridge(s);
+  else if(s.type === 'notes')   body = renderNotes(s);
   else if(s.type === 'loading') body = renderLoading();
-  else if(s.type === 'email')  body = renderEmail();
+  else if(s.type === 'email')   body = renderEmail();
 
   root.innerHTML = `${hdr}<div class="${animClass}">${body}</div>`;
 
@@ -1113,25 +1149,75 @@ render();
 
 <!--
 ═══════════════════════════════════════════════════════════
-  SETUP GUIDE — GOOGLE SHEETS + NOTION INTEGRATION
+  SETUP GUIDE — GOOGLE SHEETS INTEGRATION
 ═══════════════════════════════════════════════════════════
 
-PASO 1 — GOOGLE APPS SCRIPT (receptor de datos)
-───────────────────────────────────────────────
+IMPORTANTE: el quiz ahora envía datos en CADA paso (upsert).
+Una fila por usuario. La columna "last_step" muestra hasta
+dónde llegó. "completed=yes" indica que terminó el quiz.
+
+PASO 1 — GOOGLE APPS SCRIPT (upsert por session_id)
+────────────────────────────────────────────────────
 1. Ve a script.google.com > Nuevo proyecto
-2. Pega este código:
+2. Pega este código (reemplaza TU_SPREADSHEET_ID):
 
 ```javascript
 function doPost(e) {
   const sheet = SpreadsheetApp.openById('TU_SPREADSHEET_ID').getActiveSheet();
   const data  = JSON.parse(e.postData.contents);
+  const keys  = Object.keys(data);
+  const vals  = Object.values(data);
 
-  // Primera fila como cabecera (solo si está vacío)
-  if(sheet.getLastRow() === 0){
-    sheet.appendRow(Object.keys(data));
+  // Inicializar cabeceras si la hoja está vacía
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(keys);
+    sheet.appendRow(vals);
+    return ok();
   }
-  sheet.appendRow(Object.values(data));
 
+  const lastCol  = sheet.getLastColumn();
+  const headers  = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  const sidIdx   = headers.indexOf('session_id'); // columna del session_id (0-based)
+
+  // Buscar si ya existe una fila con este session_id
+  if (sidIdx >= 0 && data.session_id && sheet.getLastRow() > 1) {
+    const sidCol   = sidIdx + 1; // 1-based para getRange
+    const nRows    = sheet.getLastRow() - 1;
+    const sessions = sheet.getRange(2, sidCol, nRows, 1).getValues().flat();
+    const rowIdx   = sessions.indexOf(data.session_id); // 0-based dentro del array
+
+    if (rowIdx >= 0) {
+      // ACTUALIZAR fila existente — añadir columnas nuevas si hacen falta
+      keys.forEach((k, i) => {
+        let col = headers.indexOf(k) + 1; // 1-based
+        if (col === 0) {
+          // Columna nueva: añadir cabecera al final
+          col = sheet.getLastColumn() + 1;
+          sheet.getRange(1, col).setValue(k);
+          headers.push(k);
+        }
+        sheet.getRange(rowIdx + 2, col).setValue(vals[i]);
+      });
+      return ok();
+    }
+  }
+
+  // NUEVA fila: añadir columnas que aún no existan
+  keys.forEach(k => {
+    if (!headers.includes(k)) {
+      const col = sheet.getLastColumn() + 1;
+      sheet.getRange(1, col).setValue(k);
+      headers.push(k);
+    }
+  });
+  sheet.appendRow(headers.map(h => {
+    const i = keys.indexOf(h);
+    return i >= 0 ? vals[i] : '';
+  }));
+  return ok();
+}
+
+function ok() {
   return ContentService
     .createTextOutput(JSON.stringify({status:'ok'}))
     .setMimeType(ContentService.MimeType.JSON);
@@ -1140,31 +1226,23 @@ function doPost(e) {
 
 3. Implementar > Nueva implementación > Web app
 4. Ejecutar como: Yo / Quién tiene acceso: Cualquiera
-5. Copia la URL y reemplaza YOUR_GOOGLE_APPS_SCRIPT_URL en este HTML
+5. Copia la URL y reemplaza SHEET_URL en este HTML
 
 PASO 2 — SPREADSHEET ID
-────────────────────────
+───────────────────────
 En la URL de tu Google Sheet:
 https://docs.google.com/spreadsheets/d/[ESTE_ES_TU_ID]/edit
-Reemplaza TU_SPREADSHEET_ID en el Apps Script
 
-PASO 3 — NOTION (opcional, vía automatización)
-───────────────────────────────────────────────
-Opción A (recomendado): Zapier/Make
-  - Trigger: "New Row in Google Sheets"
-  - Action: "Create Page in Notion Database"
-  - Conecta los campos: timestamp, name, email, risk, etc.
-
-Opción B: Apps Script directo
-  Añade al doPost() de arriba:
-  ```
-  const notionUrl = 'https://api.notion.com/v1/pages';
-  // Fetch con Authorization: Bearer TU_NOTION_TOKEN
-  ```
-
-PASO 4 — CALENDLY
-──────────────────
+PASO 3 — CALENDLY
+─────────────────
 Reemplaza https://calendly.com/YOUR_LINK con tu link real
+
+Columnas clave en Sheets:
+  session_id   → identificador único de sesión
+  last_step    → última pregunta respondida (drop-off tracking)
+  completed    → "yes" si llegó al final / "no" si abandonó
+  timestamp    → última actualización
+  + todas las respuestas del quiz
 
 ═══════════════════════════════════════════════════════════
 -->
