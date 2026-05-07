@@ -1124,12 +1124,10 @@ function renderGender(s){
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
   s.opts.forEach(function(o,i){
     var isFemale = o.v === 'woman';
-    var iconBg = isFemale ? '#eaf9cc' : '#f0f0f8';
-    var iconColor = isFemale ? '#3a6b10' : '#4a4a8a';
-    var borderColor = isFemale ? '#a8d45e' : '#e8e8e4';
-    var bgColor = isFemale ? '#eaf9cc' : '#ffffff';
-    var icon = isFemale ? '♀' : '♂';
-    html += '<button onclick="sel(' + i + ')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 12px 22px;border:2px solid ' + borderColor + ';border-radius:20px;background:' + bgColor + ';cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">'
+    var iconBg    = isFemale ? '#fce4ec' : '#e3f0fb';
+    var iconColor = isFemale ? '#e91e8c' : '#1976d2';
+    var icon      = isFemale ? '♀' : '♂';
+    html += '<button onclick="sel(' + i + ')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 12px 22px;border:1.5px solid #e8e8e4;border-radius:20px;background:#ffffff;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">'
           + '<div style="width:68px;height:68px;border-radius:50%;background:' + iconBg + ';display:flex;align-items:center;justify-content:center;font-size:32px;color:' + iconColor + ';margin-bottom:14px">' + icon + '</div>'
           + '<div style="font-size:16px;font-weight:700;color:#111">' + o.t + '</div>'
           + '</button>';
