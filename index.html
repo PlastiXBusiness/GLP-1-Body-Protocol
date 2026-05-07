@@ -83,22 +83,16 @@ body {
 /* ─── HERO IMAGE ─── */
 .hero-wrap {
   width: 100%;
-  height: 140px;
+  height: 210px;
   background: #3d5a2e;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
   border-radius: 0 0 32px 32px;
 }
-.hero-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-}
 .hero-fallback {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   background: linear-gradient(135deg, #3d5a2e 0%, #5a7c42 50%, #c5ed82 100%);
   display: flex;
   align-items: center;
@@ -111,6 +105,15 @@ body {
   text-align: center;
   line-height: 1.3;
   padding: 20px;
+}
+.hero-wrap img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  z-index: 1;
 }
 
 /* ─── MAIN CARD ─── */
@@ -309,20 +312,51 @@ body {
   background: var(--gray-100);
   border-radius: var(--radius-card);
   border-left: 3px solid var(--lime-dark);
-  padding: 20px;
-  margin-bottom: 24px;
+  padding: 20px 20px 16px;
+  margin-bottom: 20px;
+}
+.bridge-stat {
+  font-family: var(--serif);
+  font-size: 72px;
+  line-height: 1;
+  color: var(--black);
+  letter-spacing: -0.04em;
+  margin-bottom: 2px;
+}
+.bridge-stat-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--black);
+  line-height: 1.3;
+  margin-bottom: 10px;
 }
 .bridge-headline {
   font-family: var(--serif);
-  font-size: 21px;
+  font-size: 20px;
   color: var(--black);
   line-height: 1.3;
   margin-bottom: 12px;
 }
+.bridge-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.bridge-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+}
 .bridge-body {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--gray-600);
-  line-height: 1.75;
+  line-height: 1.6;
 }
 .bridge-body .highlight {
   font-weight: 700;
@@ -331,6 +365,58 @@ body {
   padding: 1px 5px;
   border-radius: 4px;
 }
+
+/* ─── GAP CARDS (results) ─── */
+.gap-section { margin-bottom: 20px; }
+.gap-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 10px;
+}
+.gap-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--gray-100);
+  border-radius: 14px;
+  margin-bottom: 8px;
+}
+.gap-card:last-child { margin-bottom: 0; }
+.gap-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.gap-name { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 2px; }
+.gap-title { font-size: 14px; font-weight: 600; color: var(--black); margin-bottom: 2px; }
+.gap-desc { font-size: 12px; color: var(--gray-600); line-height: 1.4; }
+
+/* ─── BLUEPRINT COMPONENTS ─── */
+.blueprint-section {
+  background: var(--gray-100);
+  border-radius: var(--radius-card);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.bp-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 12px;
+}
+.bp-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 0.5px solid var(--gray-200);
+}
+.bp-row:last-child { border-bottom: none; padding-bottom: 0; }
+.bp-check { font-size: 12px; color: #27500A; flex-shrink: 0; margin-top: 2px; font-weight: 700; }
+.bp-name { font-size: 13px; font-weight: 600; color: var(--black); flex: 1; }
+.bp-val { font-size: 11px; color: var(--gray-400); flex-shrink: 0; }
 
 /* ─── LOADING SCREEN ─── */
 .loading-screen {
@@ -585,11 +671,12 @@ body {
   <!-- Top bar -->
   <div class="top-bar">The GLP-1 Muscle Protection Protocol</div>
 
-  <!-- Hero -->
+  <!-- Hero — save your image as hero.jpg in this same folder -->
   <div class="hero-wrap">
     <div class="hero-fallback">
       <div class="hero-fallback-text">Know your<br>muscle risk.</div>
     </div>
+    <img src="hero.jpg" alt="" onerror="this.style.display='none'">
   </div>
 
   <!-- Main card -->
@@ -653,8 +740,9 @@ const SC = [
    ]},
 
   {id:'b1', type:'bridge',
-   headline:"Here's something most GLP-1 users don't know.",
-   body:'Up to <span class="highlight">40% of the weight you\'ve lost</span> may not be fat — it may be muscle.<br><br>Not because you did something wrong. Because GLP-1 medications create a deep caloric deficit, and your body uses muscle as fuel when it doesn\'t have enough protein and resistance training to protect it.<br><br>The next few questions will tell us exactly where you stand.'},
+   stat: '40%',
+   statLabel: 'of your weight loss may be muscle — not fat.',
+   body: 'GLP-1 creates a deep caloric deficit. Without enough protein and resistance training, your body burns muscle as fuel. The next questions show us exactly where you stand.'},
 
   {id:'sym', type:'multi', qn:7, lbl:"What you're noticing",
    q:'Have you noticed any of these since starting? Select all that apply.',
@@ -688,8 +776,12 @@ const SC = [
    ]},
 
   {id:'b2', type:'bridge',
-   headline:"This isn't about willpower. It never was.",
-   body:"Your body in perimenopause is fighting a two-front biological battle: GLP-1 is creating a deep caloric deficit, and declining estrogen is directly reducing your ability to maintain muscle mass at the same time.<br><br>Nobody told you this. Your doctor didn't. The medication provider didn't.<br><br>That gap is exactly what the next questions help us understand — so your Blueprint addresses your specific situation."},
+   headline: 'Two things are working against you at once.',
+   pills: [
+     {icon:'⚡', text:'GLP-1 → deep caloric deficit', bg:'#fff0f0', color:'#991b1b'},
+     {icon:'📉', text:'Declining estrogen → harder to retain muscle', bg:'#fffbeb', color:'#92400e'}
+   ],
+   body: "Nobody told you this. That gap is exactly what your Blueprint is built to close."},
 
   {id:'fear', type:'single', qn:10, lbl:'Looking ahead',
    q:'When you think about eventually stopping your medication, how do you feel?',
@@ -700,8 +792,15 @@ const SC = [
      {t:"I'm not planning to stop anytime soon",v:'not_stop'}
    ]},
 
-  /* CHANGE 1: "6 months" → "16 weeks" */
-  {id:'goal', type:'single', qn:11, lbl:'Your vision',
+  {id:'timeline', type:'single', qn:11, lbl:'Your medication plan',
+   q:'Are you planning to stop your GLP-1 medication?',
+   opts:[
+     {t:'Yes — within the next 1–3 months', v:'stop_soon', n:'high urgency'},
+     {t:'Possibly, but no set timeline',     v:'stop_maybe'},
+     {t:'No plans to stop anytime soon',     v:'stop_no'}
+   ]},
+
+  {id:'goal', type:'single', qn:12, lbl:'Your vision',
    q:'What would feel like the biggest win for you 16 weeks from now?',
    opts:[
      {t:'Keeping my results after stopping the medication',v:'keep'},
@@ -710,7 +809,7 @@ const SC = [
      {t:'Not being scared when the medication ends',v:'not_scared'}
    ]},
 
-  {id:'diet', type:'multi', qn:12, lbl:'Your nutrition',
+  {id:'diet', type:'multi', qn:13, lbl:'Your nutrition',
    q:'Any dietary restrictions we should know about? Select all that apply.',
    opts:[
      {t:'Dairy-free',v:'dairy'},
@@ -720,12 +819,12 @@ const SC = [
      {t:'No restrictions',v:'none',x:1}
    ]},
 
-  {id:'kid', type:'single', qn:13, lbl:'Medical check',
+  {id:'kid', type:'single', qn:14, lbl:'Medical check',
    q:'Have you ever been told you have kidney disease or reduced kidney function?',
    sub:'This affects our protein recommendations for you.',
    opts:[{t:'No',v:'no'},{t:'Yes',v:'yes'},{t:'Not sure',v:'maybe'}]},
 
-  {id:'notes', type:'notes', qn:14, lbl:'Anything else?',
+  {id:'notes', type:'notes', qn:15, lbl:'Anything else?',
    q:'Anything we should know to make your plan more accurate?',
    sub:'Optional — skip if nothing else is relevant.',
    ph:"e.g. I have a bad knee / I can't eat dairy / I take metformin / I have hypothyroidism"},
@@ -760,9 +859,13 @@ function calcRisk(){
          + (em[ans.ex] ?? 2)
          + (pm[ans.pro] ?? 2);
 
-  /* Tiers: 0-4 LOW · 5-9 MODERATE · 10+ HIGH */
-  if(score >= 10) return 'HIGH';
-  if(score >= 5)  return 'MODERATE';
+  /* Timeline to stop (new question) */
+  const tm = {stop_soon:3, stop_maybe:1, stop_no:0};
+  score += (tm[ans.timeline] ?? 1);
+
+  /* Tiers: 0-5 LOW · 6-11 MODERATE · 12+ HIGH */
+  if(score >= 12) return 'HIGH';
+  if(score >= 6)  return 'MODERATE';
   return 'LOW';
 }
 
@@ -938,11 +1041,29 @@ function renderMulti(s){
 
 /* CHANGE 2: bridge records ans[id]='si' before advancing */
 function renderBridge(s){
-  return `
-    <div class="bridge-card">
+  let inner = '';
+  if(s.stat){
+    inner = `
+      <div class="bridge-stat">${s.stat}</div>
+      <div class="bridge-stat-label">${s.statLabel}</div>
+      <div class="bridge-body">${s.body}</div>`;
+  } else if(s.pills){
+    const pillsHtml = s.pills.map(p =>
+      `<div class="bridge-pill" style="background:${p.bg};color:${p.color}">
+         <span style="font-size:16px">${p.icon}</span>
+         <span>${p.text}</span>
+       </div>`).join('');
+    inner = `
       <div class="bridge-headline">${s.headline}</div>
-      <div class="bridge-body">${s.body}</div>
-    </div>
+      <div class="bridge-pills">${pillsHtml}</div>
+      <div class="bridge-body">${s.body}</div>`;
+  } else {
+    inner = `
+      <div class="bridge-headline">${s.headline}</div>
+      <div class="bridge-body">${s.body}</div>`;
+  }
+  return `
+    <div class="bridge-card">${inner}</div>
     <button class="continue-btn" onclick="ans['${s.id}']='si';goNext()">I understand →</button>`;
 }
 
@@ -1004,6 +1125,39 @@ function renderEmail(){
     </div>`;
 }
 
+function buildGapCards(){
+  const gaps = [];
+  const exMap = {
+    none:   {icon:'🏋️', title:'No resistance training',       desc:'Your highest-risk factor. Muscle loss accelerates without it.'},
+    light:  {icon:'🏋️', title:'No resistance training',       desc:'Walks and yoga don\'t protect muscle. Progressive resistance does.'},
+    cardio: {icon:'🏋️', title:'Cardio only — no resistance',  desc:'Cardio burns calories but doesn\'t prevent muscle loss.'}
+  };
+  if(exMap[ans.ex]) gaps.push({label:'Exercise gap', ...exMap[ans.ex]});
+
+  const pmEst = {notrack:40, lt50:40,'50-80':65,'80-120':100,gt120:130};
+  const target = parseInt(proteinTarget());
+  const current = pmEst[ans.pro] || 40;
+  const diff = target - current;
+  if(diff > 10) gaps.push({icon:'🥩', label:'Protein gap', title:`~${diff}g short every day`, desc:`Your target: ${proteinTarget()}/day. You're getting ~${current}g.`});
+
+  if(ans.timeline === 'stop_soon')
+    gaps.push({icon:'⏱️', label:'Off-ramp risk', title:'Stopping within 1–3 months', desc:'Without a protocol, most women regain weight and lose more muscle after stopping.'});
+  else if(ans.med === 'stopped')
+    gaps.push({icon:'⚠️', label:'Off-ramp risk', title:'Already stopped', desc:'Muscle and weight regain risk is at its peak right now.'});
+  else if(ans.fear === 'terrified')
+    gaps.push({icon:'⏱️', label:'Off-ramp concern', title:'No exit strategy yet', desc:'Your Blueprint includes a specific plan so stopping doesn\'t undo your results.'});
+
+  return gaps.slice(0,3).map(g => `
+    <div class="gap-card">
+      <div class="gap-icon">${g.icon}</div>
+      <div>
+        <div class="gap-name">${g.label}</div>
+        <div class="gap-title">${g.title}</div>
+        <div class="gap-desc">${g.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
 function renderDone(){
   const risk   = calcRisk();
   const muscle = estMuscle();
@@ -1011,61 +1165,71 @@ function renderDone(){
   const rClass = risk==='HIGH' ? 'risk-high' : risk==='MODERATE' ? 'risk-mod' : 'risk-low';
   const rLabel = risk==='HIGH' ? 'HIGH RISK' : risk==='MODERATE' ? 'MODERATE RISK' : 'LOW RISK';
   const rMsg   = risk==='HIGH'
-    ? "Your results show significant muscle loss risk. Your Blueprint and a free plan call will address this directly."
+    ? "Significant muscle loss risk detected. Your Blueprint addresses this directly."
     : risk==='MODERATE'
-    ? "You're ahead of most — but there are clear gaps to close before they compound."
-    : "You're in a better position than most GLP-1 users. Let's keep it that way.";
-  const fearLine = ans.fear === 'terrified'
-    ? "Your biggest concern — what happens when you stop — is addressed specifically in your Blueprint."
-    : "Your Blueprint covers the transition off medication and long-term muscle maintenance.";
-  const faceLine = ans.sym && ans.sym.includes('face')
-    ? `<div class="result-card">
-         <div class="rc-label">Ozempic face protocol</div>
-         <div class="rc-value">Skin &amp; collagen protocol included</div>
-         <div class="rc-sub">Collagen peptides + Vitamin C — in your supplement stack</div>
-       </div>`
+    ? "Clear gaps that need to close before they compound."
+    : "You're in a stronger position than most GLP-1 users.";
+  const faceExtra = ans.sym && ans.sym.includes('face')
+    ? `<div class="bp-row"><span class="bp-check">✓</span><span class="bp-name">Ozempic Face Protocol</span><span class="bp-val">$47 value</span></div>`
     : '';
 
   return `
     <div class="results-screen">
       <span class="risk-badge ${rClass}">${rLabel}</span>
       <div class="result-message">${rMsg}</div>
-      <div class="result-submessage">${fearLine}</div>
 
-      <div class="result-cards">
+      <div class="result-cards" style="margin-bottom:20px">
         <div class="result-card">
           <div class="rc-label">Estimated lean mass lost</div>
           <div class="rc-value">${muscle} of muscle alongside fat</div>
-          <div class="rc-sub">Based on your timeline and weight lost — this is what your Blueprint addresses first</div>
+          <div class="rc-sub">Based on your timeline and weight lost</div>
         </div>
         <div class="result-card">
           <div class="rc-label">Your daily protein target</div>
           <div class="rc-value">${prot} per day</div>
-          <div class="rc-sub">Personalized for your current weight — included in your Blueprint</div>
+          <div class="rc-sub">Personalized for your current weight</div>
         </div>
-        ${faceLine}
+      </div>
+
+      <div class="gap-section">
+        <div class="gap-section-title">Your 3 key gaps</div>
+        ${buildGapCards()}
+      </div>
+
+      <div class="blueprint-section">
+        <div class="bp-title">What's in your free Blueprint</div>
+        <div class="bp-row"><span class="bp-check">✓</span><span class="bp-name">14-Day Strength Protocol</span><span class="bp-val">$149</span></div>
+        <div class="bp-row"><span class="bp-check">✓</span><span class="bp-name">Personalized Protein Plan</span><span class="bp-val">$97</span></div>
+        <div class="bp-row"><span class="bp-check">✓</span><span class="bp-name">Creatine &amp; Supplement Stack</span><span class="bp-val">$47</span></div>
+        <div class="bp-row"><span class="bp-check">✓</span><span class="bp-name">Medication Off-Ramp Protocol</span><span class="bp-val">$97</span></div>
+        ${faceExtra}
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--gray-600)">Total value</span>
+          <span style="font-size:15px;font-weight:700;color:var(--black)">$390 — yours free</span>
+        </div>
       </div>
 
       <div class="next-steps">
         <div class="next-steps-title">What happens next</div>
         <div class="step-row">
           <div class="step-num">1</div>
-          <div class="step-text">Check your email — your full GLP-1 Body Blueprint is on its way</div>
+          <div class="step-text">Check your email — your Blueprint is on its way</div>
         </div>
         <div class="step-row">
           <div class="step-num">2</div>
-          <div class="step-text">Book your free 30-minute plan call below</div>
+          <div class="step-text">Book your free 30-min plan call below</div>
         </div>
         <div class="step-row">
           <div class="step-num">3</div>
-          <div class="step-text">We review your Blueprint together and show you exactly what your body needs right now</div>
+          <div class="step-text">We review your Blueprint together — you leave with a concrete plan</div>
         </div>
       </div>
 
       <a href="${CALENDLY_URL}" target="_blank" class="calendly-btn">
-        📅 Book your free plan call
+        📅 Book your free 30-min plan call
       </a>
-      <p class="calendly-label">30 minutes · Free · No obligation</p>
+      <p class="calendly-label">Free · 30 minutes · No obligation</p>
+      <p style="font-size:11px;color:var(--gray-400);text-align:center;margin-top:14px;line-height:1.5;padding:0 8px">"The most common thing we hear: <em>I wish I'd done this three months ago.</em> Your muscle loss isn't waiting."</p>
     </div>`;
 }
 
@@ -1096,7 +1260,7 @@ function render(){
   const s = SC[ci];
 
   /* Progress */
-  const totalQ  = 14;
+  const totalQ  = 15;
   /* Para bridges (sin qn) usamos el qn de la pregunta anterior para que la barra no retroceda */
   let pct;
   if(s.qn) {
