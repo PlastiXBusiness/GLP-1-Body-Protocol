@@ -9,14 +9,14 @@
 <style>
 /* ─── RESET & BASE ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+html, body { height: 100%; }
 body {
   font-family: 'Hanken Grotesk', sans-serif;
   background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 100vh;
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -47,12 +47,10 @@ body {
   width: 100%;
   max-width: 430px;
   background: var(--white);
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
 }
 
 /* ─── TOP BAR ─── */
@@ -66,6 +64,9 @@ body {
   color: var(--black);
   flex-shrink: 0;
   letter-spacing: 0.01em;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 /* ─── LOGO BAR ─── */
@@ -122,9 +123,7 @@ body {
 .card {
   background: var(--white);
   flex: 1;
-  padding: 16px 24px 20px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  padding: 16px 24px 48px;
 }
 
 /* ─── PROGRESS HEADER ─── */
@@ -770,6 +769,8 @@ const CALENDLY_URL = 'https://calendly.com/YOUR_LINK';
 
 /* ─── QUIZ STEPS ─── */
 const SC = [
+  {id:'intro', type:'intro'},
+
   {id:'gender', type:'single', qn:1, lbl:'About you',
    q:'What is your gender?',
    opts:[{t:'Woman',v:'woman'},{t:'Man',v:'man'}]},
@@ -785,7 +786,8 @@ const SC = [
      {t:'An upcoming event',v:'event'},
      {t:'Staying healthy for my family',v:'family'},
      {t:'Gaining confidence',v:'confidence'},
-     {t:'Improving my energy, strength, and mobility',v:'energy'}
+     {t:'Improving my energy, strength, and mobility',v:'energy'},
+     {t:'Feeling better in my body',v:'body'}
    ]},
 
   {id:'med', type:'single', qn:4, lbl:'Your GLP-1',
@@ -794,7 +796,7 @@ const SC = [
      {t:'Ozempic or Wegovy (semaglutide)',v:'sema'},
      {t:'Mounjaro or Zepbound (tirzepatide)',v:'tirz'},
      {t:'Other GLP-1',v:'other'},
-     {t:'I recently stopped taking it',v:'stopped',n:'highest urgency'}
+     {t:'I recently stopped taking it',v:'stopped'}
    ]},
 
   {id:'dur', type:'single', qn:5, lbl:'Your GLP-1',
@@ -857,7 +859,7 @@ const SC = [
    opts:[
      {t:'No structured exercise',v:'none'},
      {t:'Light activity — walks, yoga, stretching',v:'light'},
-     {t:'Cardio 2–3x per week',v:'cardio',n:'no resistance = partial protection'},
+     {t:'Cardio 2–3x per week',v:'cardio'},
      {t:'Occasional weights — no real structure',v:'occ'},
      {t:'Consistent resistance training program',v:'resist'}
    ]},
@@ -888,7 +890,7 @@ const SC = [
   {id:'timeline', type:'single', qn:13, lbl:'Your medication plan',
    q:'Are you planning to stop your GLP-1 medication?',
    opts:[
-     {t:'Yes — within the next 1–3 months', v:'stop_soon', n:'high urgency'},
+     {t:'Yes — within the next 1–3 months', v:'stop_soon'},
      {t:'Possibly, but no set timeline',     v:'stop_maybe'},
      {t:'No plans to stop anytime soon',     v:'stop_no'}
    ]},
@@ -1023,7 +1025,7 @@ function goNext(){
     submitToSheets(name, email); /* envío final con nombre+email */
     done = true; render(); return;
   }
-  trackStep(s.id); /* envío parcial en cada paso */
+  if(s.type !== 'intro') trackStep(s.id);
   goingBack = false;
   ci++; render();
   if(SC[ci] && SC[ci].type === 'loading') doLoad();
@@ -1100,64 +1102,41 @@ function doLoad(){
 
 /* ─── RENDERERS ─── */
 function renderIntro(){
-  return `
-    <div class="intro-screen">
-      <div class="intro-brand">MEDVi</div>
-      <div class="intro-headline">Reach your goal weight fast without restrictive diets and exercise.</div>
-      <div class="intro-sub">Please answer the following questions so we can qualify you for medical weight loss.</div>
-      <button class="continue-btn" onclick="goNext()">Start →</button>
-    </div>`;
+  const checks = ['Personalized Muscle Risk Score','Daily protein target for your weight','Free GLP-1 Body Blueprint by email','Takes 2 minutes · No obligation'];
+  const checkHtml = checks.map(function(item){
+    return '<div style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:#1a1a1a">'
+         + '<span style="width:20px;height:20px;background:#c5ed82;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#111;flex-shrink:0">✓</span>'
+         + item + '</div>';
+  }).join('');
+  return '<div style="padding:4px 0 8px">'
+    + '<div style="font-size:12px;font-weight:600;color:#5c5c5c;margin-bottom:14px">Join <strong style="color:#111">2,400+ women</strong> on GLP-1 protecting their results</div>'
+    + '<div style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:-0.03em;color:#111;margin-bottom:10px">Losing weight on GLP-1?<br>Make sure it\'s <span style="color:#5a8a25">fat</span> — not muscle.</div>'
+    + '<div style="font-size:14px;color:#5c5c5c;line-height:1.6;margin-bottom:20px">Find out your personal muscle loss risk in 2 minutes — and get a free Blueprint to protect your results before, during, and after stopping.</div>'
+    + '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px">' + checkHtml + '</div>'
+    + '<button class="continue-btn" style="font-size:16px;padding:16px 20px" onclick="goNext()">Calculate my Muscle Risk Score →</button>'
+    + '<div style="font-size:11px;color:#9a9a9a;text-align:center;margin-top:10px">Free · 2 minutes · No credit card</div>'
+    + '</div>';
 }
-
 function renderGender(s){
-  return `
-    <div style="padding:4px 0 8px">
-
-      <!-- Social proof label -->
-      <div style="font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:14px;text-align:left">
-        Join <strong style="color:var(--black)">2,400+ women</strong> on GLP-1 who are protecting their results
-      </div>
-
-      <!-- Main headline -->
-      <div style="font-family:var(--sans);font-size:26px;font-weight:700;line-height:1.2;letter-spacing:-0.03em;color:var(--black);margin-bottom:10px">
-        Losing weight on GLP-1?<br>
-        Make sure it's <span style="color:#5a8a25">fat</span> — not muscle.
-      </div>
-
-      <!-- Subtitle -->
-      <div style="font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:20px">
-        Find out your personal muscle loss risk in 2 minutes — and get a free Blueprint to protect your results before, during, and after stopping.
-      </div>
-
-      <!-- Checklist -->
-      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:22px">
-        ${[
-          'Personalized Muscle Risk Score',
-          'Daily protein target for your weight',
-          'Free GLP-1 Body Blueprint by email',
-          'No obligation — takes 2 minutes'
-        ].map(item=>`
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--gray-900)">
-            <span style="width:20px;height:20px;background:var(--lime);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--black);flex-shrink:0">✓</span>
-            ${item}
-          </div>`).join('')}
-      </div>
-
-      <!-- Divider -->
-      <div style="height:1px;background:var(--gray-200);margin-bottom:18px"></div>
-
-      <!-- Gender question -->
-      <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-400);margin-bottom:8px">${s.lbl}</div>
-      <div class="question-title" style="font-size:20px;margin-bottom:14px">${s.q}</div>
-      <div style="display:flex;flex-direction:column;gap:9px">
-        ${s.opts.map((o,i)=>`
-          <button class="opt-btn" onclick="sel(${i})" style="justify-content:center;padding:14px 20px;font-size:15px;font-weight:600;border-radius:var(--radius-pill)">
-            ${o.t}
-          </button>`).join('')}
-      </div>
-    </div>`;
+  var html = '<div style="padding:4px 0 8px">'
+    + '<div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9a9a9a;margin-bottom:10px">' + s.lbl + '</div>'
+    + '<div class="question-title" style="font-size:22px;margin-bottom:20px">' + s.q + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+  s.opts.forEach(function(o,i){
+    var isFemale = o.v === 'woman';
+    var iconBg = isFemale ? '#eaf9cc' : '#f0f0f8';
+    var iconColor = isFemale ? '#3a6b10' : '#4a4a8a';
+    var borderColor = isFemale ? '#a8d45e' : '#e8e8e4';
+    var bgColor = isFemale ? '#eaf9cc' : '#ffffff';
+    var icon = isFemale ? '♀' : '♂';
+    html += '<button onclick="sel(' + i + ')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 12px 22px;border:2px solid ' + borderColor + ';border-radius:20px;background:' + bgColor + ';cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent">'
+          + '<div style="width:68px;height:68px;border-radius:50%;background:' + iconBg + ';display:flex;align-items:center;justify-content:center;font-size:32px;color:' + iconColor + ';margin-bottom:14px">' + icon + '</div>'
+          + '<div style="font-size:16px;font-weight:700;color:#111">' + o.t + '</div>'
+          + '</button>';
+  });
+  html += '</div></div>';
+  return html;
 }
-
 function renderSingle(s){
   const opts = s.opts.map((o,i) => {
     const isSel = ans[s.id] === o.v;
@@ -1192,19 +1171,22 @@ function renderMulti(s){
 
 /* CHANGE 2: bridge records ans[id]='si' before advancing */
 function renderBridge(s){
-  let inner = '';
+  var inner = '';
   if(s.stat){
-    inner = `
-      <div class="bridge-stat">${s.stat}</div>
-      <div class="bridge-stat-label">${s.statLabel}</div>`;
+    var is60 = s.stat === '60%';
+    var bg      = is60 ? '#fff3cd' : '#fff8e6';
+    var border  = is60 ? '#d97706' : '#f59e0b';
+    var statClr = is60 ? '#7c2d12' : '#92400e';
+    var badge   = is60 ? '#7c2d12' : '#78350f';
+    inner = '<div style="background:' + bg + ';border-radius:20px;border:2px solid ' + border + ';padding:28px 22px 22px;margin-bottom:20px">'
+          + '<div style="font-size:80px;font-weight:800;line-height:1;color:' + statClr + ';letter-spacing:-0.04em;margin-bottom:8px">' + s.stat + '</div>'
+          + '<div style="font-size:16px;font-weight:700;color:' + badge + ';line-height:1.3">' + s.statLabel + '</div>'
+          + '</div>';
   } else {
-    inner = `<div class="bridge-headline">${s.headline||''}</div>`;
+    inner = '<div class="bridge-headline">' + (s.headline||'') + '</div>';
   }
-  return `
-    <div class="bridge-card">${inner}</div>
-    <button class="continue-btn" onclick="ans['${s.id}']='si';goNext()">I understand →</button>`;
+  return inner + '<button class="continue-btn" onclick="bridgeNext(this.dataset.id)" data-id="' + s.id + '">I understand →</button>';
 }
-
 function renderNotes(s){
   return `
     ${s.lbl?`<div class="section-label">${s.lbl}</div>`:''}
@@ -1234,7 +1216,7 @@ function renderLoading(){
   ).join('');
   return `
     <div class="loading-screen">
-      <div class="loading-title">Calculating your<br>Muscle Risk Score...</div>
+      <div class="loading-title" style="font-size:28px;font-weight:700;letter-spacing:-0.02em">Calculating your<br>Muscle Risk Score...</div>
       <div class="loading-steps">${sh}</div>
     </div>`;
 }
@@ -1252,8 +1234,10 @@ function renderEmail(){
   return `
     <div class="email-screen">
       <div class="results-ready-label">Your results are ready</div>
-      <span class="risk-badge ${rClass}" style="margin-bottom:8px">${rLabel}</span>
-      <div style="font-size:14px;color:var(--gray-600);line-height:1.5;margin-bottom:20px">${rMsg}</div>
+      <div style="margin-bottom:16px">
+        <span class="risk-badge ${rClass}" style="font-size:16px;padding:10px 22px;margin-bottom:10px;display:inline-flex">${rLabel}</span>
+        <div style="font-size:22px;font-weight:700;color:var(--black);line-height:1.25;letter-spacing:-0.02em;margin-top:8px">${rMsg}</div>
+      </div>
       <div class="question-title" style="font-size:20px;margin-bottom:6px">Enter your details to unlock your full score.</div>
       <div class="question-sub" style="margin-bottom:20px">We'll also send your personalized GLP-1 Body Blueprint by email.</div>
       <input id="enm" type="text"  class="form-input" placeholder="First name" oninput="chkEmail()"/>
@@ -1315,7 +1299,7 @@ function renderDone(){
 
   return `
     <div class="results-screen">
-      <div class="results-intro-text">We've designed a specific Blueprint based on your quiz results.</div>
+      <div style="font-family:var(--sans);font-size:20px;font-weight:700;color:var(--black);line-height:1.25;letter-spacing:-0.02em;margin-bottom:14px">We've designed a specific Blueprint based on your quiz results.</div>
 
       <span class="risk-badge ${rClass}">${rLabel}</span>
       <div class="risk-consequences">${rConsequences}</div>
@@ -1335,13 +1319,19 @@ function renderDone(){
         <div class="bp-total-row">
           <span class="bp-total-label">Total value</span>
           <span class="bp-total-price">$390</span>
-          <span class="bp-total-free">FREE</span>
+          <span class="bp-total-free" style="font-size:20px;font-weight:800">FREE</span>
         </div>
       </div>
 
-      <a href="${CALENDLY_URL}" target="_blank" class="calendly-btn">
-        📅 It's free — book a call now to review it together
-      </a>
+      <div style="background:var(--lime);border-radius:20px;padding:20px 18px 18px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#3a5c10;margin-bottom:8px">Next step</div>
+        <div style="font-size:18px;font-weight:700;color:var(--black);line-height:1.25;letter-spacing:-0.02em;margin-bottom:6px">Book your free<br>30-minute results call</div>
+        <div style="font-size:13px;color:#2a3d12;line-height:1.6;margin-bottom:16px">This is a free 30-minute results call. We'll walk through your Muscle Risk Score and Blueprint together. I'll explain exactly what your numbers mean, answer any questions, and show you what comes after the 14-day plan.</div>
+        <a href="${CALENDLY_URL}" target="_blank" style="display:block;width:100%;padding:15px 20px;background:var(--black);color:var(--white);border:none;border-radius:100px;font-family:var(--sans);font-size:15px;font-weight:700;text-align:center;text-decoration:none;letter-spacing:-0.01em;cursor:pointer;box-sizing:border-box">
+          Book my free call →
+        </a>
+        <div style="font-size:11px;color:#3a5c10;text-align:center;margin-top:10px;font-weight:600">Free · 30 min · No obligation · No credit card</div>
+      </div>
 
       <div class="green-result-bar">
         ✓ Your personalized Blueprint is ready
@@ -1390,7 +1380,7 @@ function render(){
     for(let i = ci - 1; i >= 0; i--){ if(SC[i].qn){ prevQn = SC[i].qn; break; } }
     pct = Math.round((prevQn / totalQ) * 100);
   }
-  const showHdr = s.type !== 'loading' && s.type !== 'email' && s.qn !== 1;
+  const showHdr = s.type !== 'loading' && s.type !== 'email' && s.type !== 'intro' && s.qn !== 1;
 
   let hdr = '';
   if(showHdr){
@@ -1407,7 +1397,8 @@ function render(){
   }
 
   let body = '';
-  if(s.type === 'single')   body = s.qn === 1 ? renderGender(s) : renderSingle(s);
+  if(s.type === 'intro')    body = renderIntro();
+  else if(s.type === 'single')   body = s.qn === 1 ? renderGender(s) : renderSingle(s);
   else if(s.type === 'multi')   body = renderMulti(s);
   else if(s.type === 'bridge')  body = renderBridge(s);
   else if(s.type === 'notes')   body = renderNotes(s);
@@ -1422,6 +1413,9 @@ function render(){
     document.getElementById('eem')?.addEventListener('input', chkEmail);
   }
 }
+
+/* ─── BRIDGE HELPER ─── */
+function bridgeNext(id){ ans[id]="si"; goNext(); }
 
 /* ─── INIT ─── */
 render();
