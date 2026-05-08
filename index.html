@@ -1126,11 +1126,11 @@ function renderIntro(){
          + '<span style="width:20px;height:20px;background:#c5ed82;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#111;flex-shrink:0">✓</span>'
          + item + '</div>';
   }).join('');
-  return '<div style="padding:4px 0 8px">'
-    + '<div style="font-size:12px;font-weight:600;color:#5c5c5c;margin-bottom:14px">Join <strong style="color:#111">2,400+ women</strong> on GLP-1 protecting their results</div>'
-    + '<div style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:-0.03em;color:#111;margin-bottom:10px">Losing weight on GLP-1?<br>Make sure it\'s <span style="color:#5a8a25">FAT</span> — not muscle.</div>'
-    + '<div style="font-size:14px;color:#5c5c5c;line-height:1.6;margin-bottom:12px">Find out your personal muscle loss risk in 2 minutes — and get a free Blueprint to protect your results before, during, and after stopping.</div>'
-    + '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' + checkHtml + '</div>'
+  return '<div style="padding:0 0 8px">'  /* intro */
+    + '<div style="font-size:12px;font-weight:600;color:#5c5c5c;margin-bottom:10px"><strong style="color:#111">Science-backed</strong> · Built on clinical & data science research</div>'
+    + '<div style="font-size:26px;font-weight:700;line-height:1.2;letter-spacing:-0.03em;color:#111;margin-bottom:8px">Losing weight on GLP-1?<br>Make sure it\'s <span style="color:#5a8a25">FAT</span> — not muscle.</div>'
+    + '<div style="font-size:14px;color:#5c5c5c;line-height:1.6;margin-bottom:8px">Find out your personal muscle loss risk in 2 minutes — and get a free Blueprint to protect your results before, during, and after stopping.</div>'
+    + '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px">' + checkHtml + '</div>'
     + '<button class="continue-btn" style="font-size:16px;padding:14px 20px" onclick="goNext()">Calculate my Muscle Risk Score →</button>'
     + '<div style="font-size:11px;color:#9a9a9a;text-align:center;margin-top:6px">Free · 2 minutes · No credit card</div>'
     + '</div>';
